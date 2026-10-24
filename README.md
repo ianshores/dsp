@@ -4,6 +4,21 @@ MIT-licensed, header-only C++17 building blocks for real-time audio. The library
 contains a state-variable filter, a multimode biquad, and Convoy's custom real FFT. Host adapters, plugin
 packaging and deployment belong in [Foundry](https://github.com/ianshores/foundry).
 
+## Metering primitives
+
+`dsp/metering.hpp` provides sample peak, configurable envelope, peak hold/decay,
+running mean square, bounded sliding energy windows, explicit channel weights,
+two-biquad K weighting, exact-history loudness gating and 4x FIR true-peak
+estimation. `BiquadFilter` reuses the existing biquad. Audio ingestion allocates
+no memory; setup capacities, invalid input and overflow are explicit.
+
+The standards-related path currently supports **48 kHz and Annex 1 roles only**.
+Official ITU loudness files and independent numeric tests validate the scoped
+behavior. It is not a full meter, packaged plugin or general conformance claim.
+See [API, limits, references and reproduction](docs/metering.md),
+[validation evidence](docs/validation/metering-zeus/README.md), and
+`examples/metering.cpp` for headless composition.
+
 ## State-variable filter
 
 `dsp/svf.hpp` provides `SvfType`, `SvfParameters`, `SvfCoefficients`,
