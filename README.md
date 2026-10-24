@@ -1,9 +1,55 @@
 # DSP library
 
-MIT-licensed, header-only C++17 building blocks for real-time audio. The first
-module is Convoy's custom real FFT, extracted without changing its transform
-algorithm. Filters and other reusable modules can join it here. Host adapters,
-plugin packaging and deployment belong in [Foundry](https://github.com/ianshores/foundry).
+MIT-licensed, header-only C++17 building blocks for real-time audio. The library
+contains a multimode biquad and Convoy's custom real FFT. Host adapters, plugin
+packaging and deployment belong in [Foundry](https://github.com/ianshores/foundry).
+
+## Biquad filter
+
+`dsp/biquad.hpp` provides one filter instance per audio channel. Modes are
+low-pass, high-pass, band-pass, notch, peak, low shelf, high shelf, and all-pass.
+The designer-facing parameters are frequency in Hz, Q (resonance or width), and
+gain in dB for peaks and shelves. Shelves use a separate slope parameter instead
+of Q. Band-pass has 0 dB gain at its center frequency.
+
+```cpp
+#include <dsp/biquad.hpp>
+
+using namespace shores_dsp;
+const auto high_pass = design_biquad(48000, {BiquadType::HighPass, 300});
+const auto low_pass = design_biquad(48000, {BiquadType::LowPass, 4000});
+Biquad high(high_pass), low(low_pass); // one pair per channel
+
+// In the audio callback, with caller-owned buffers:
+high.process(input, output, frame_count);
+low.process(output, output, frame_count); // exact in-place processing is supported
+```
+
+Design coefficients on a control thread, then apply them at an audio event
+boundary with `set_coefficients()` or `ramp_to(coefficients, sample_count)`.
+The latter interpolates coefficients for a defined number of samples; a host
+can crossfade whole filters for a particularly large mode change. The caller
+controls communication between threads. The fixed-setting processing path uses
+five multiplies and two state values per sample, with no allocation or lock.
+Double-precision coefficients and state preserve stability at low cutoffs and
+high sample rates while input and output remain float. Inaudible state is
+cleared at block boundaries to avoid denormal slowdowns.
+
+Coefficient design follows the [W3C Audio EQ Cookbook](https://www.w3.org/TR/audio-eq-cookbook/).
+Finite controls are limited to 10 Hz–0.49 × sample rate, Q 0.1–18, gain
+−36–36 dB, and shelf slope 0.1–1. Sample rates must be 1–768 kHz. Invalid
+rates and nonfinite controls are rejected. `tests/biquad.cpp` checks the
+frequency-response landmarks,
+independent double-precision processing, automation, in-place processing, and
+the safe parameter range.
+
+**Measured on Intel Core Ultra 9 185H, Linux, GCC 16.2.1**, `-O3` C++17,
+48 kHz, 256-sample blocks, noise input, nine 20-second-audio trials per run:
+one fixed peak filter took about 2.2–2.4 ns/sample (roughly 0.011% of one
+core's real-time budget), and eight cascaded filters took about 17–18 ns/sample.
+These are DSP-only measurements on this machine, not plugin or host CPU readings.
+Run `dsp_biquad_benchmark` to measure fixed and per-block ramped operation on
+your machine. [Method and raw baseline results](docs/performance/biquad-baseline.md).
 
 ## Real FFT
 
