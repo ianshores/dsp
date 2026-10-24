@@ -1,0 +1,29 @@
+{
+  "observed_utc": "2026-10-24T18:17:45.797517+00:00",
+  "host": "Zeus",
+  "cpu": "Intel Core i9-9900K @ 3.60 GHz, 8 cores/16 threads",
+  "os": "Linux-7.1.9-arch1-2-x86_64-with-glibc2.44",
+  "gcc": "g++ (GCC) 16.2.1 20260810",
+  "clang": "clang version 22.1.8",
+  "cmake": "4.4.4 via isolated uv tool",
+  "base": "5e563031240f1ee7cd6c99f511f8541612fe58eb",
+  "branch": "feature/metering-primitives",
+  "release_flags": "-Wall -Wextra -Werror -O3 -DNDEBUG -std=c++17",
+  "sanitizer_flags": "-O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -std=c++17",
+  "benchmark": {
+    "sample_rate": 48000,
+    "block_frames": 256,
+    "trials": 9,
+    "frames_per_trial": 960000,
+    "channels": [
+      1,
+      2,
+      6
+    ],
+    "native_target": false,
+    "fast_math": false,
+    "forced_fma": false,
+    "affinity": "none",
+    "host_load": "ordinary desktop session; not isolated or measured"
+  }
+}

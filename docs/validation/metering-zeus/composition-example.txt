@@ -1,0 +1,1 @@
+synthetic stereo: peak=0.0707946 envelope=0.0660987 hold=0.0707946 RMS=0.0500593 true_peak_dBTP=-22.9933 M=-22.9933 S=-22.9933 I=-22.9933 LUFS; history_complete=1
