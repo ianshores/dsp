@@ -13,17 +13,58 @@ inline double energy_to_lufs(double weighted_mean_square) noexcept {
         : -std::numeric_limits<double>::infinity();
 }
 
-// Exactly the published 48 kHz coefficients, not RBJ shelf approximations or
-// an SVF substitute. ITU-R BS.1770-5 Annex 1, Tables 1 and 2. Other sample rates
-// are deliberately rejected pending separate response/fixture validation.
+struct KWeightingCoefficients {
+    BiquadCoefficients shelf{1.53512485958697, -2.69169618940638, 1.19839281085285,
+                             -1.69065929318241, 0.73248077421585};
+    BiquadCoefficients highpass{1., -2., 1., -1.99004745483398, 0.99007225036621};
+};
+
+// Inverse bilinear polynomial of a published section in u=(1-z^-1)/(1+z^-1).
+// Recover its natural frequency in physical Hz, then prewarp at the new rate.
+// This preserves prototype damping, numerator shape and endpoint gains (also
+// the published RLB gain), rather than substituting a generic normalized shelf.
+inline KWeightingCoefficients design_k_weighting(double fs) {
+    metering_detail::rate(fs);
+    if (fs < 4000) throw std::invalid_argument("K weighting needs 4000..768000 Hz: 1682 Hz shelf below Nyquist");
+    KWeightingCoefficients result;
+    if (fs == 48000) return result; // exact decimal tables, no recomputation
+    const auto retune = [fs](BiquadCoefficients c) {
+        constexpr long double pi = 3.1415926535897932384626433832795L;
+        const long double a0 = 1.L + c.a1 + c.a2, a1 = 2.L * (1.L - c.a2), a2 = 1.L - c.a1 + c.a2;
+        const long double g = std::sqrt(a0 / a2);
+        const long double hz = std::atan(g) * 48000 / pi;
+        const long double scale = g / std::tan(pi * hz / fs);
+        const long double d0 = a0 + a1 * scale + a2 * scale * scale;
+        const long double b0 = static_cast<long double>(c.b0) + c.b1 + c.b2;
+        const long double b1 = 2.L * (static_cast<long double>(c.b0) - c.b2);
+        const long double b2 = static_cast<long double>(c.b0) - c.b1 + c.b2;
+        return BiquadCoefficients{
+            double((b0 + b1 * scale + b2 * scale * scale) / d0),
+            double(2 * (b0 - b2 * scale * scale) / d0),
+            double((b0 - b1 * scale + b2 * scale * scale) / d0),
+            double(2 * (a0 - a2 * scale * scale) / d0),
+            double((a0 - a1 * scale + a2 * scale * scale) / d0)};
+    };
+    result.shelf = retune(result.shelf); result.highpass = retune(result.highpass);
+    return result;
+}
+
+// Existing Biquad twice; all design runs outside callbacks. 48 kHz retains the
+// published coefficients and processing path. configure() resets the epoch;
+// failed validation leaves coefficients, states, rate and status unchanged.
 class KWeightingFilter : public metering_detail::Status {
     BiquadFilter shelf_{{1.53512485958697, -2.69169618940638, 1.19839281085285,
                        -1.69065929318241, 0.73248077421585}};
     BiquadFilter highpass_{{1., -2., 1., -1.99004745483398, 0.99007225036621}};
+    double rate_ = 48000;
   public:
-    explicit KWeightingFilter(double fs = 48000) {
-        if (fs != 48000) throw std::invalid_argument("K weighting currently supports exactly 48000 Hz");
+    explicit KWeightingFilter(double fs = 48000) { configure(fs); }
+    void configure(double fs) {
+        const auto c = design_k_weighting(fs);
+        shelf_.set_coefficients(c.shelf); highpass_.set_coefficients(c.highpass);
+        rate_ = fs; reset();
     }
+    double sample_rate() const noexcept { return rate_; }
     void reset() noexcept { shelf_.reset(); highpass_.reset(); invalid_ = false; }
     float process(float input) noexcept {
         float x = float(sample(input));
@@ -74,9 +115,11 @@ struct IntegratedLoudness {
     bool complete = true; // false on invalid input or exhausted history capacity
 };
 
-// Fixed 48 kHz gate: completed 400 ms blocks, 100 ms hop, 75% overlap; no
-// partial first/final block. Feed already K-weighted/channel-summed ENERGY for
-// each frame. Four compensated 100 ms sums avoid a large per-sample ring.
+// Full nearest-sample 400 ms blocks, starts round_half_up(j*fs/10). The exact
+// rational clock bounds start error by half a sample, with no cumulative drift.
+// Fractional hops/overlaps vary by one frame: exact 75% is not representable at
+// arbitrary rates. Integral-hop rates retain the original four-hop arithmetic.
+// Other rates use a fixed block-sized energy ring. No partial first/final block.
 // Setup allocates capacity doubles (default 36,000, max 1,000,000). Audio work
 // and reset are O(1) per frame; the history never grows or gets decimated.
 class LoudnessGate : public metering_detail::Status {
@@ -84,6 +127,11 @@ class LoudnessGate : public metering_detail::Status {
     std::array<double, 4> hops_{};
     std::size_t stored_ = 0, hop_head_ = 0, hop_count_ = 0, in_hop_ = 0;
     metering_detail::Sum hop_sum_;
+    metering_detail::HopClock clock_;
+    std::vector<double> ring_;
+    metering_detail::Sum window_sum_;
+    std::size_t ring_head_ = 0, ring_filled_ = 0, until_block_ = 19200, block_frames_ = 19200;
+    double rate_ = 48000;
     bool overflow_ = false;
     static std::size_t capacity(std::size_t n) {
         if (n == 0 || n > 1000000) throw std::invalid_argument("gate capacity must be 1..1000000 blocks");
@@ -92,11 +140,24 @@ class LoudnessGate : public metering_detail::Status {
   public:
     explicit LoudnessGate(std::size_t block_capacity = 36000, double fs = 48000)
         : blocks_(capacity(block_capacity), 0.) {
-        if (fs != 48000) throw std::invalid_argument("loudness gate currently supports exactly 48000 Hz");
+        configure(fs);
     }
+    // Setup only; preserves configured history capacity, starts a new epoch.
+    void configure(double fs) {
+        metering_detail::HopClock clock(fs);
+        const auto width = metering_detail::RateRatio(fs).block_frames();
+        std::vector<double> ring(clock.integral() ? 0 : width, 0.);
+        clock_ = clock; ring_ = std::move(ring); block_frames_ = width; rate_ = fs;
+        reset();
+    }
+    double sample_rate() const noexcept { return rate_; }
+    std::size_t block_frames() const noexcept { return block_frames_; }
+    std::size_t hop_floor_frames() const noexcept { return clock_.floor_frames(); }
+    bool integral_hops() const noexcept { return clock_.integral(); }
     void reset() noexcept {
         stored_ = hop_head_ = hop_count_ = in_hop_ = 0;
         hop_sum_.reset(); overflow_ = invalid_ = false;
+        clock_.reset(); ring_head_ = ring_filled_ = 0; until_block_ = block_frames_; window_sum_.reset();
     }
     std::size_t stored_blocks() const noexcept { return stored_; }
     std::size_t block_capacity() const noexcept { return blocks_.size(); }
@@ -104,9 +165,20 @@ class LoudnessGate : public metering_detail::Status {
     // Returns true whenever a complete gating block boundary is reached,
     // including after capacity is exhausted. The stored prefix then freezes.
     bool process(double weighted_energy) noexcept {
-        hop_sum_.add(energy(weighted_energy));
-        if (++in_hop_ != 4800) return false;
-        hops_[hop_head_] = hop_sum_.value() / 4800;
+        const double e = energy(weighted_energy);
+        if (!clock_.integral()) {
+            if (ring_filled_ == ring_.size()) window_sum_.add(-ring_[ring_head_]); else ++ring_filled_;
+            ring_[ring_head_] = e; window_sum_.add(e);
+            if (++ring_head_ == ring_.size()) ring_head_ = 0;
+            if (--until_block_ != 0) return false;
+            until_block_ = clock_.next();
+            if (stored_ == blocks_.size()) { overflow_ = true; return true; }
+            blocks_[stored_++] = std::max(0., window_sum_.value()) / double(block_frames_);
+            return true;
+        }
+        hop_sum_.add(e);
+        if (++in_hop_ != clock_.floor_frames()) return false;
+        hops_[hop_head_] = hop_sum_.value() / double(clock_.floor_frames());
         hop_head_ = (hop_head_ + 1) % 4; hop_sum_.reset(); in_hop_ = 0;
         if (hop_count_ < 4) ++hop_count_;
         if (hop_count_ < 4) return false;

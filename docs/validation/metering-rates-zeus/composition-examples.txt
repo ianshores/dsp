@@ -1,0 +1,12 @@
+$ ./build-metering-gcc/dsp_metering_example 44100
+synthetic stereo: rate=44100 TP_factor=9 peak=0.0707941278815 envelope=0.0661129871976 hold=0.0707941278815 RMS=0.0500593263762 true_peak_dBTP=-22.9988338941 M=-22.994360351 S=-22.9943603509 I=-22.9943667265 LUFS; history_complete=1
+$ ./build-metering-gcc/dsp_metering_example 48000
+synthetic stereo: rate=48000 TP_factor=4 peak=0.0707945749164 envelope=0.0660986531342 hold=0.0707945749164 RMS=0.0500593266208 true_peak_dBTP=-22.9933044654 M=-22.9932955828 S=-22.9932955828 I=-22.9933019595 LUFS; history_complete=1
+$ ./build-metering-gcc/dsp_metering_example 48000.25
+synthetic stereo: rate=48000.25 TP_factor=8 peak=0.0707945749164 envelope=0.0661003638259 hold=0.0707945749164 RMS=0.0500593522779 true_peak_dBTP=-22.994812013 M=-22.9932755388 S=-22.9933023681 I=-22.9932823983 LUFS; history_complete=1
+$ ./build-metering-gcc/dsp_metering_example 96000
+synthetic stereo: rate=96000 TP_factor=4 peak=0.0707945749164 envelope=0.0661193150396 hold=0.0707945749164 RMS=0.050059326409 true_peak_dBTP=-23.0000004321 M=-22.9889735086 S=-22.9889735086 I=-22.9889798137 LUFS; history_complete=1
+$ ./build-metering-gcc/dsp_metering_example 192000
+synthetic stereo: rate=192000 TP_factor=2 peak=0.0707945749164 envelope=0.066110023158 hold=0.0707945749164 RMS=0.0500593262676 true_peak_dBTP=-23.0000004321 M=-22.9878936063 S=-22.9878936063 I=-22.9878998268 LUFS; history_complete=1
+$ ./build-metering-gcc/dsp_metering_example 768000
+synthetic stereo: rate=768000 TP_factor=2 peak=0.0707945749164 envelope=0.0661107421962 hold=0.0707945749164 RMS=0.0500593265502 true_peak_dBTP=-23.0000004321 M=-22.9875560712 S=-22.9875560712 I=-22.9875622075 LUFS; history_complete=1

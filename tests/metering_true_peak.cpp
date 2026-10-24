@@ -83,7 +83,7 @@ int main(){
             }
         require(minimum>-.8&&maximum<.3,"true peak tone accuracy regression bound");
         std::cout<<"tested 480 Hz..20 kHz tone/phase error range="<<minimum<<".."<<maximum<<" dB; not universal tolerance\n";
-        bool rejected=false;try{TruePeakOversampler bad(96000);}catch(const std::invalid_argument&){rejected=true;}
+        bool rejected=false;try{TruePeakOversampler bad(999);}catch(const std::invalid_argument&){rejected=true;}
         require(rejected,"unsupported true peak rate accepted");
         std::cout<<"PASS: bandlimited 4x FIR, independent convolution, synthetic EBU 15-19, flush, silence/reset/invalid and phase sweep; official transient fixtures pending\n";
     }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}

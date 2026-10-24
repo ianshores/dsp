@@ -1,0 +1,31 @@
+Test project /home/ian/dev/code/dsp/build-metering-sanitize
+      Start  1: metering_itu_fixtures
+ 1/13 Test  #1: metering_itu_fixtures ............   Passed   10.60 sec
+      Start  2: metering_loudness
+ 2/13 Test  #2: metering_loudness ................   Passed    2.98 sec
+      Start  3: metering_true_peak
+ 3/13 Test  #3: metering_true_peak ...............   Passed    0.63 sec
+      Start  4: metering_realtime
+ 4/13 Test  #4: metering_realtime ................   Passed    0.54 sec
+      Start  5: metering_rates
+ 5/13 Test  #5: metering_rates ...................   Passed    7.35 sec
+      Start  6: metering_basic
+ 6/13 Test  #6: metering_basic ...................   Passed    0.01 sec
+      Start  7: svf
+ 7/13 Test  #7: svf ..............................   Passed    0.75 sec
+      Start  8: biquad
+ 8/13 Test  #8: biquad ...........................   Passed    0.01 sec
+      Start  9: fft_native
+ 9/13 Test  #9: fft_native .......................   Passed    0.10 sec
+      Start 10: fft_scalar
+10/13 Test #10: fft_scalar .......................   Passed    0.12 sec
+      Start 11: fft_sse
+11/13 Test #11: fft_sse ..........................   Passed    0.09 sec
+      Start 12: fft_half
+12/13 Test #12: fft_half .........................   Passed    0.09 sec
+      Start 13: fft_packed
+13/13 Test #13: fft_packed .......................   Passed    0.09 sec
+
+100% tests passed out of 13
+
+Total Test time (real) =  23.37 sec

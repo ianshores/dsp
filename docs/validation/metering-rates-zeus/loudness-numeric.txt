@@ -1,0 +1,9 @@
+K reference maximum absolute error=6.1386e-08
+gate independent result=-21.1047 LUFS; blocks=77
+synthetic EBU case 1 integrated=-22.9933 expected=-23 tolerance=0.1 LU
+synthetic EBU case 2 integrated=-32.9933 expected=-33 tolerance=0.1 LU
+synthetic EBU case 3 integrated=-23.0139 expected=-23 tolerance=0.1 LU
+synthetic EBU case 4 integrated=-23.0139 expected=-23 tolerance=0.1 LU
+synthetic EBU case 5 integrated=-22.9787 expected=-23 tolerance=0.1 LU
+synthetic EBU case 6 integrated=-23.0163 expected=-23 tolerance=0.1 LU
+PASS: exact 48k K cascade, independent gate, explicit layouts/LFE, synthetic loudness cases; no blanket compliance claim

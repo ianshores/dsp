@@ -110,7 +110,7 @@ static void gate_and_layout() {
     for(int i=0;i<19200;++i)capacity.process(0);
     require(std::isinf(capacity.result().lufs)&&capacity.result().lufs<0,"gated silence");
     capacity.process(std::numeric_limits<double>::quiet_NaN());require(!capacity.result().complete,"gate invalid flag");
-    for(double bad:{44100.,96000.,0.,std::numeric_limits<double>::quiet_NaN()}) {
+    for(double bad:{999.,768001.,0.,std::numeric_limits<double>::quiet_NaN()}) {
         rejects([&]{KWeightingFilter x(bad);});rejects([&]{LoudnessGate x(10,bad);});
     }
     rejects([]{LoudnessGate x(0);});rejects([]{LoudnessGate x(1000001);});

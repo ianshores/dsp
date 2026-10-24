@@ -8,11 +8,13 @@ packaging and deployment belong in [Foundry](https://github.com/ianshores/foundr
 
 `dsp/metering.hpp` provides sample peak, configurable envelope, peak hold/decay,
 running mean square, bounded sliding energy windows, explicit channel weights,
-two-biquad K weighting, exact-history loudness gating and 4x FIR true-peak
+two-biquad K weighting, exact-history loudness gating and rate-aware FIR true-peak
 estimation. `BiquadFilter` reuses the existing biquad. Audio ingestion allocates
 no memory; setup capacities, invalid input and overflow are explicit.
 
-The standards-related path currently supports **48 kHz and Annex 1 roles only**.
+K weighting supports continuous **4–768 kHz**; gate/windows/true peak accept
+**1–768 kHz**, including fractional rates. Annex 1 channel roles only. Three-second
+windows fit across the range. The published 48 kHz K/FIR paths are preserved.
 Official ITU loudness files and independent numeric tests validate the scoped
 behavior. It is not a full meter, packaged plugin or general conformance claim.
 See [API, limits, references and reproduction](docs/metering.md),

@@ -1,0 +1,21 @@
+[ 10%] Built target dsp_metering_itu_driver
+[ 10%] Built target dsp_metering_loudness_test
+[ 18%] Building CXX object CMakeFiles/dsp_metering_realtime_test.dir/tests/metering_realtime.cpp.o
+[ 18%] Built target dsp_metering_true_peak_test
+[ 23%] Built target dsp_metering_rates_test
+[ 28%] Built target dsp_metering_basic_test
+[ 34%] Built target dsp_svf_test
+[ 39%] Built target dsp_biquad_test
+[ 44%] Built target dsp_fft_native
+[ 50%] Built target dsp_fft_scalar
+[ 55%] Built target dsp_fft_sse
+[ 60%] Built target dsp_fft_half
+[ 65%] Built target dsp_fft_packed
+[ 71%] Built target dsp_metering_rates_benchmark
+[ 76%] Built target dsp_metering_benchmark
+[ 81%] Built target dsp_svf_benchmark
+[ 86%] Built target dsp_biquad_benchmark
+[ 92%] Built target dsp_metering_example
+[ 97%] Built target dsp_svf_audition
+[100%] Linking CXX executable dsp_metering_realtime_test
+[100%] Built target dsp_metering_realtime_test

@@ -1,0 +1,8 @@
+true-peak direct-convolution maximum error=0
+synthetic EBU case 15 dBTP=-6.21706 expected=-6 +0.2/-0.4
+synthetic EBU case 16 dBTP=-5.97591 expected=-6 +0.2/-0.4
+synthetic EBU case 17 dBTP=-6.31328 expected=-6 +0.2/-0.4
+synthetic EBU case 18 dBTP=-6.02649 expected=-6 +0.2/-0.4
+synthetic EBU case 19 dBTP=3.02907 expected=3 +0.2/-0.4
+tested 480 Hz..20 kHz tone/phase error range=-0.292675..0.22044 dB; not universal tolerance
+PASS: bandlimited 4x FIR, independent convolution, synthetic EBU 15-19, flush, silence/reset/invalid and phase sweep; official transient fixtures pending

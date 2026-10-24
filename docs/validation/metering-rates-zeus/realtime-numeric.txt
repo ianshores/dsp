@@ -1,0 +1,1 @@
+PASS: zero heap allocations during all primitive processing/reset paths (96000 frames); setup excluded

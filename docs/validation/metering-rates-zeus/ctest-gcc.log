@@ -1,0 +1,31 @@
+Test project /home/ian/dev/code/dsp/build-metering-gcc
+      Start  1: metering_itu_fixtures
+ 1/13 Test  #1: metering_itu_fixtures ............   Passed    3.21 sec
+      Start  2: metering_loudness
+ 2/13 Test  #2: metering_loudness ................   Passed    1.45 sec
+      Start  3: metering_true_peak
+ 3/13 Test  #3: metering_true_peak ...............   Passed    0.14 sec
+      Start  4: metering_realtime
+ 4/13 Test  #4: metering_realtime ................   Passed    0.05 sec
+      Start  5: metering_rates
+ 5/13 Test  #5: metering_rates ...................   Passed    1.65 sec
+      Start  6: metering_basic
+ 6/13 Test  #6: metering_basic ...................   Passed    0.00 sec
+      Start  7: svf
+ 7/13 Test  #7: svf ..............................   Passed    0.54 sec
+      Start  8: biquad
+ 8/13 Test  #8: biquad ...........................   Passed    0.00 sec
+      Start  9: fft_native
+ 9/13 Test  #9: fft_native .......................   Passed    0.06 sec
+      Start 10: fft_scalar
+10/13 Test #10: fft_scalar .......................   Passed    0.05 sec
+      Start 11: fft_sse
+11/13 Test #11: fft_sse ..........................   Passed    0.07 sec
+      Start 12: fft_half
+12/13 Test #12: fft_half .........................   Passed    0.05 sec
+      Start 13: fft_packed
+13/13 Test #13: fft_packed .......................   Passed    0.06 sec
+
+100% tests passed out of 13
+
+Total Test time (real) =   7.34 sec

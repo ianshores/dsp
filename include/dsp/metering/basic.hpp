@@ -3,9 +3,11 @@
 #pragma once
 
 #include "dsp/biquad.hpp"
+#include "dsp/metering/rate.hpp"
 #include <cstdint>
 #include <limits>
 #include <vector>
+#include <utility>
 
 namespace shores_dsp {
 
@@ -13,10 +15,6 @@ namespace shores_dsp {
 using BiquadFilter = Biquad;
 
 namespace metering_detail {
-inline void rate(double fs) {
-    if (!std::isfinite(fs) || fs < 1000 || fs > 768000)
-        throw std::invalid_argument("metering rate must be 1000..768000 Hz");
-}
 inline void seconds(double t, double maximum = 60) {
     if (!std::isfinite(t) || t < 0 || t > maximum)
         throw std::invalid_argument("metering time outside supported range");
@@ -149,22 +147,27 @@ class MeanSquareAccumulator : public metering_detail::Status {
 };
 
 // Moving rectangular integration of NONNEGATIVE ENERGY, not audio amplitude.
-// Setup allocates N doubles, with N=round(fs*seconds), 1..1,048,576 and time
+// Setup allocates N doubles, with N=round(fs*seconds), 1..2,304,000 and time
 // <=10 seconds. No callback allocation. Each push/reset is O(1); no ring clear
 // on reset. Partial startup mean divides by available count; ready() identifies
 // a complete window. Zero-count block calls throughout this API are no-ops.
 class SlidingWindow : public metering_detail::Status {
     std::vector<double> ring_;
     std::size_t head_ = 0, filled_ = 0;
+    double sample_rate_ = 48000;
     metering_detail::Sum sum_;
     static std::size_t frames(double fs, double seconds) {
-        metering_detail::rate(fs); metering_detail::seconds(seconds, 10);
-        const auto n = std::llround(fs * seconds);
-        if (n < 1 || n > 1048576) throw std::invalid_argument("window must contain 1..1048576 samples");
-        return std::size_t(n);
+        return metering_detail::window_frames(fs, seconds);
     }
   public:
-    SlidingWindow(double fs = 48000, double seconds = 0.4) : ring_(frames(fs, seconds), 0.) {}
+    SlidingWindow(double fs = 48000, double seconds = 0.4) : ring_(frames(fs, seconds), 0.), sample_rate_(fs) {}
+    // Setup only; success starts a new measurement, failure preserves old state.
+    void configure(double fs, double seconds) {
+        std::vector<double> replacement(frames(fs, seconds), 0.);
+        ring_ = std::move(replacement); sample_rate_ = fs; reset();
+    }
+    double sample_rate() const noexcept { return sample_rate_; }
+    double duration_seconds() const noexcept { return double(ring_.size()) / sample_rate_; }
     void reset() noexcept { head_ = filled_ = 0; sum_.reset(); invalid_ = false; }
     std::size_t capacity() const noexcept { return ring_.size(); }
     std::size_t count() const noexcept { return filled_; }

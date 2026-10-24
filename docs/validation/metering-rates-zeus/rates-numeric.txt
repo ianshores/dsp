@@ -1,0 +1,4 @@
+K independent response max_abs_dB=2.91726e-09 tone_energy_max_abs_dB=3.11699e-08
+fractional schedule: 1000000 hops/rate, <=0.50001 sample phase error; gate_max_abs_LU=3.55271e-15
+generated TP analytic tone error_dB=-0.0698461..0.01874 multisine_max_abs_dB=0.0363158 sinc_pulse_max_abs_dB=0.0357592 independent_convolution_max_abs=2.22045e-16; tested cases only
+PASS arbitrary-rate numeric/energy/timing/TP/setup/layout limits; no blanket conformance claim
