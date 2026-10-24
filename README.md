@@ -48,8 +48,9 @@ the safe parameter range.
 one fixed peak filter took about 2.2–2.4 ns/sample (roughly 0.011% of one
 core's real-time budget), and eight cascaded filters took about 17–18 ns/sample.
 These are DSP-only measurements on this machine, not plugin or host CPU readings.
-Run `dsp_biquad_benchmark` to measure fixed and per-block ramped operation on
-your machine. [Method and raw baseline results](docs/performance/biquad-baseline.md).
+Configure with `-DDSP_BUILD_BENCHMARKS=ON` and run `dsp_biquad_benchmark` to
+measure fixed and per-block ramped operation on your machine.
+[Method and raw baseline results](docs/performance/biquad-baseline.md).
 
 ## Real FFT
 
