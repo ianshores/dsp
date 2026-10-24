@@ -8,7 +8,7 @@ int main() {
     try {
         for (std::size_t bad : {0u, 31u, 33u, 1000u}) {
             try {
-                dsp::RealFFT plan(bad);
+                shores_dsp::RealFFT plan(bad);
                 throw std::runtime_error("invalid FFT size was accepted");
             } catch (const std::invalid_argument &) {
             }
@@ -18,7 +18,7 @@ int main() {
         std::uniform_real_distribution<float> noise(-1.f, 1.f);
         int cases = 0;
         for (std::size_t n = 32; n <= 16384; n *= 2) {
-            dsp::RealFFT plan(n);
+            shores_dsp::RealFFT plan(n);
             std::vector<float> in(n), out(n), real(n / 2 + 1), imag(n / 2 + 1);
             std::vector<bool> seen(n / 2 + 1, false);
             for (std::size_t k = 0; k <= n / 2; ++k) {

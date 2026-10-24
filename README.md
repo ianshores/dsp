@@ -7,7 +7,7 @@ plugin packaging and deployment belong in [Foundry](https://github.com/ianshores
 
 ## Real FFT
 
-Include `dsp/fft.hpp` and construct `dsp::RealFFT` during setup, outside the
+Include `dsp/fft.hpp` and construct `shores_dsp::RealFFT` during setup, outside the
 audio callback. Sizes must be powers of two of at least 32 samples. Forward and
 inverse processing allocate no memory or acquire locks. Plans own their scratch
 buffers, so use one plan per concurrent processing stream.
@@ -15,7 +15,7 @@ buffers, so use one plan per concurrent processing stream.
 ```cpp
 #include <dsp/fft.hpp>
 
-dsp::RealFFT fft(1024);
+shores_dsp::RealFFT fft(1024);
 float time[1024] = {};
 float real[513], imag[513], recovered[1024];
 fft.forward(time, real, imag);

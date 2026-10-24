@@ -24,7 +24,7 @@
 #define DSP_HAS_AVX_RECONSTRUCTION 1
 #endif
 
-namespace dsp {
+namespace shores_dsp {
 // Even/odd real samples form an N/2-point complex FFT. Forward DIF and
 // inverse DIT radix-4 stages share a mixed-radix permutation; no reorder pass.
 // Spectrum contract: separate real/imaginary arrays, N/2+1 slots. Logical bin k
@@ -629,4 +629,4 @@ class RealFFT {
         inverse_impl<true>(spectrum, spectrum + 8, time);
     }
 };
-} // namespace dsp
+} // namespace shores_dsp
