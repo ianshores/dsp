@@ -1,0 +1,25 @@
+UpdateCTestConfiguration  from :/home/ian/dev/code/dsp/build-clang/DartConfiguration.tcl
+Parse Config file:/home/ian/dev/code/dsp/build-clang/DartConfiguration.tcl
+Test project /home/ian/dev/code/dsp/build-clang
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: svf
+
+1: Test command: /home/ian/dev/code/dsp/build-clang/dsp_svf_test
+1: Working Directory: /home/ian/dev/code/dsp/build-clang
+1: Test timeout computed to be: 1500
+1: modulation peak (test input only): 3.21476
+1: PASS: four modes; independent long-double DF1/complex response and nodal modulation; limits, Q, rates, silence/tails, reset, variable blocks, in-place, event timing; max static abs error=2.97363e-08; max modulation abs error=1.19048e-07
+1/1 Test #1: svf ..............................   Passed    0.53 sec
+
+The following tests passed:
+	svf
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.53 sec

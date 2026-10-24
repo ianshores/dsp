@@ -1,0 +1,16 @@
+engine,mode,stages,trial,unit,ns_per_unit,checksum,max_abs_output,status
+biquad,fixed,1,0,sample,3.486986,0.011077301,0.006699812,finite
+biquad,fixed,8,0,sample,27.253753,-0.011978228,0.005239975,finite
+biquad,prepared_block,1,0,sample,3.535796,-0.156507197,0.019028077,finite
+biquad,prepared_block,8,0,sample,27.295365,-2.225957978,1.529018760,finite
+biquad,prepared_sample_matched,1,0,sample,nan,-nan,338676973635990226445978334597977473024.000000000,nonfinite
+biquad,design_and_store,1,0,event,14.484343,-630.336906858,0.000000000,finite
+biquad,apply_only,1,0,event,3.048830,-0.996030599,0.000000000,finite
+svf,fixed,1,0,sample,4.666671,0.011077301,0.006699812,finite
+svf,fixed,8,0,sample,36.956514,-0.011978228,0.005239975,finite
+svf,prepared_block,1,0,sample,4.679959,-0.156434529,0.019028077,finite
+svf,prepared_block,8,0,sample,36.903302,-2.411177835,1.529826522,finite
+svf,prepared_sample_matched,1,0,sample,7.173931,0.017052453,0.016190166,finite
+svf,prepared_stream_svf,1,0,sample,5.879580,0.017052453,0.016190166,finite
+svf,design_and_store,1,0,event,12.880319,1947.204812740,0.000000000,finite
+svf,apply_only,1,0,event,0.956302,2.005181778,0.000000000,finite

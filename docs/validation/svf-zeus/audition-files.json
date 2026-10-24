@@ -1,0 +1,77 @@
+{
+  "files": [
+    {
+      "path": "build/audition-zeus/01-dry-synthetic.wav",
+      "sha256": "00108dccb82de352525cc7a9e6219c7ebf305b5103ea1a125e4cef21d99d20dd",
+      "bytes": 1536044,
+      "channels": 1,
+      "sample_rate": 48000,
+      "frames": 768000,
+      "seconds": 16.0,
+      "sample_width_bytes": 2,
+      "peak_pcm16": 5786,
+      "full_scale_samples": 0,
+      "scene_rms_linear": [
+        0.03493806738409478,
+        0.0342830685426026,
+        0.034942983978507584,
+        0.03433653444737864
+      ]
+    },
+    {
+      "path": "build/audition-zeus/02-biquad.wav",
+      "sha256": "8834c4dea33b256bcc75527616b3338b6241dac6f7990fd6b20a5fd3a80cef78",
+      "bytes": 1536044,
+      "channels": 1,
+      "sample_rate": 48000,
+      "frames": 768000,
+      "seconds": 16.0,
+      "sample_width_bytes": 2,
+      "peak_pcm16": 26214,
+      "full_scale_samples": 0,
+      "scene_rms_linear": [
+        0.029289989946970924,
+        0.03807040024096842,
+        0.013750925107824602,
+        0.0753681324288597
+      ]
+    },
+    {
+      "path": "build/audition-zeus/03-svf.wav",
+      "sha256": "4ff9bbf4485ab28484de173190ef38e76335ea036327e877e406178f16297103",
+      "bytes": 1536044,
+      "channels": 1,
+      "sample_rate": 48000,
+      "frames": 768000,
+      "seconds": 16.0,
+      "sample_width_bytes": 2,
+      "peak_pcm16": 9632,
+      "full_scale_samples": 0,
+      "scene_rms_linear": [
+        0.029289989946970924,
+        0.03807379565363832,
+        0.012423907083085748,
+        0.03596582631287627
+      ]
+    },
+    {
+      "path": "build/audition-zeus/04-left-biquad-right-svf.wav",
+      "sha256": "662c8f60c4b7901e6d5ad5372205a4501bbb92948c10315949c9b825ac66ce6d",
+      "bytes": 3072044,
+      "channels": 2,
+      "sample_rate": 48000,
+      "frames": 768000,
+      "seconds": 16.0,
+      "sample_width_bytes": 2,
+      "peak_pcm16": 26214,
+      "full_scale_samples": 0,
+      "scene_rms_linear": [
+        0.029289989946970924,
+        0.038072097985155325,
+        0.013104224672412889,
+        0.05905038546945362
+      ]
+    }
+  ],
+  "validation": "decoded PCM headers, frame counts, peak and per-scene RMS; no listening claim"
+}

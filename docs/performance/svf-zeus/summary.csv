@@ -1,0 +1,16 @@
+engine,mode,stages,unit,trials,median_ns,min_ns,max_ns,percent_one_core_48khz
+biquad,fixed,1,sample,9,3.465547,3.439687,3.482025,0.016635
+biquad,fixed,8,sample,9,27.249838,27.229997,27.335080,0.130799
+biquad,prepared_block,1,sample,9,3.475578,3.451915,3.495634,0.016683
+biquad,prepared_block,8,sample,9,27.281686,27.267343,27.302664,0.130952
+biquad,prepared_sample_matched,1,sample,9,6.266222,6.060640,6.709761,0.030078
+biquad,design_and_store,1,event,9,13.598631,13.454014,13.865793,
+biquad,apply_only,1,event,9,3.046093,2.974275,3.083043,
+svf,fixed,1,sample,9,4.686353,4.674434,4.696973,0.022494
+svf,fixed,8,sample,9,36.912647,36.873808,37.028747,0.177181
+svf,prepared_block,1,sample,9,4.686564,4.662073,4.731127,0.022496
+svf,prepared_block,8,sample,9,36.985746,36.904981,37.078126,0.177532
+svf,prepared_sample_matched,1,sample,9,7.246206,7.121425,7.921365,0.034782
+svf,prepared_stream_svf,1,sample,9,6.008467,5.938473,6.089473,0.028841
+svf,design_and_store,1,event,9,13.215365,13.128610,13.338700,
+svf,apply_only,1,event,9,0.888750,0.856992,1.005592,

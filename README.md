@@ -1,8 +1,64 @@
 # DSP library
 
 MIT-licensed, header-only C++17 building blocks for real-time audio. The library
-contains a multimode biquad and Convoy's custom real FFT. Host adapters, plugin
+contains a state-variable filter, a multimode biquad, and Convoy's custom real FFT. Host adapters, plugin
 packaging and deployment belong in [Foundry](https://github.com/ianshores/foundry).
+
+## State-variable filter
+
+`dsp/svf.hpp` provides `SvfType`, `SvfParameters`, `SvfCoefficients`,
+`design_svf(rate, parameters)`, and one `Svf` per channel. Modes are low-pass,
+high-pass, band-pass and notch. Cutoff/center frequency and Q use the same
+conventions as the corresponding biquad modes. Band-pass is scaled by `1/Q`
+for **0 dB center gain**, including at high Q. Low/high-pass have the usual
+−3.01 dB corner at Q = 1/√2; higher Q can boost around the cutoff.
+
+```cpp
+#include <dsp/svf.hpp>
+using namespace shores_dsp;
+// Setup/control thread:
+const auto c = design_svf(48000, {SvfType::LowPass, 3600, 0.7071067811865476});
+Svf filter(c); // independent state per channel
+// Audio thread, after safe publication by the caller:
+filter.process(input, output, frame_count);
+filter.set_coefficients(prepared_next_event); // preserves integrator state
+```
+
+This is an optimized trapezoidal two-integrator design based on
+[Simper's nodal derivation](https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).
+Its state and coefficients are double, with float input/output. Processing is
+`noexcept` and performs no allocation, lock, I/O, coefficient design or trig.
+Exact in-place blocks are supported; partially overlapping buffers are not.
+Default construction passes input through. `reset()` clears state and retains
+the current coefficients; inaudible state is cleared at block boundaries.
+
+For sample-rate control motion, prepare an immutable array off the audio thread:
+`process_modulated(input, output, events, frame_count)` applies `events[i]`
+**before** sample `i` and retains the last set for later fixed processing.
+Smooth cutoff/Q before calling `design_svf()` for each desired event. The caller
+owns event memory, delivery deadlines, and synchronization. `set_coefficients()`
+supports prepared events at less frequent boundaries. Design costs and the memory
+bandwidth of sample-rate event arrays are separate from fixed processing cost.
+Do not arbitrarily interpolate the internal SVF coefficients.
+
+Finite frequency/Q controls clamp to 10 Hz–0.49 × sample rate and Q 0.1–18.
+Rates outside 1–768 kHz, unknown modes, and nonfinite controls are rejected during
+design. Both paths require finite audio and coefficients returned by the designer
+(or the default wire). On a sample-rate change, prepare new coefficients and apply
+at a known boundary; reset/crossfade if needed for the application.
+
+Rapid modulation is explicitly tested, including against an independent nodal
+solver, but this is not a promise of stability or inaudibility for every possible
+signal/control sequence. Abrupt cutoff/Q or mode changes can click. As the
+[JUCE behavioral documentation](https://docs.juce.com/master/classjuce_1_1dsp_1_1StateVariableTPTFilter.html)
+also explains, TPT filters can still need smoothing. No JUCE code or dependency
+is used. Biquad remains useful for EQ/shelves and has its own state and API.
+
+See the [Zeus validation report](docs/validation/svf-zeus/README.md),
+[matched performance measurements](docs/performance/svf-zeus/README.md), and
+[audition instructions](docs/validation/svf-zeus/audition.md).
+The SVF is a DSP primitive; host/PlugData/Heavy adapters and packaged plugins
+require separate implementation and verification.
 
 ## Biquad filter
 

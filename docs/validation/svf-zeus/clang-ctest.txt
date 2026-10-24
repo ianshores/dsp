@@ -1,0 +1,19 @@
+Test project /home/ian/dev/code/dsp/build-clang
+    Start 1: svf
+1/7 Test #1: svf ..............................   Passed    0.55 sec
+    Start 2: biquad
+2/7 Test #2: biquad ...........................   Passed    0.00 sec
+    Start 3: fft_native
+3/7 Test #3: fft_native .......................   Passed    0.06 sec
+    Start 4: fft_scalar
+4/7 Test #4: fft_scalar .......................   Passed    0.06 sec
+    Start 5: fft_sse
+5/7 Test #5: fft_sse ..........................   Passed    0.06 sec
+    Start 6: fft_half
+6/7 Test #6: fft_half .........................   Passed    0.06 sec
+    Start 7: fft_packed
+7/7 Test #7: fft_packed .......................   Passed    0.06 sec
+
+100% tests passed out of 7
+
+Total Test time (real) =   0.86 sec
